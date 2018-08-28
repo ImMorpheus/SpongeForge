@@ -71,6 +71,7 @@ import net.minecraftforge.fml.common.ModContainer;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent;
 import org.apache.logging.log4j.Logger;
+import org.spongepowered.api.Game;
 import org.spongepowered.api.GameState;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.event.Cancellable;
@@ -268,9 +269,10 @@ public class SpongeModEventManager extends SpongeEventManager {
         if (!SpongeImpl.isInitialized()) {
             return false;
         }
-        final boolean client = Sponge.getGame().getPlatform().getExecutionType().isClient();
-        final boolean hasServer = Sponge.isServerAvailable();
-        return (allowClientThread && client && !hasServer) || (hasServer && Sponge.getServer().isMainThread());
+        final Game game = Sponge.getGame();
+        final boolean client = game.getPlatform().getExecutionType().isClient();
+        final boolean hasServer = game.isServerAvailable();
+        return (allowClientThread && client && !hasServer) || (hasServer && game.getServer().isMainThread());
     }
 
     /**
