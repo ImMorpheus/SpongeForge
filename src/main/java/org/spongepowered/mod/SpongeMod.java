@@ -131,6 +131,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.security.cert.Certificate;
 import java.util.List;
+import java.util.Optional;
 
 import javax.annotation.Nullable;
 
@@ -519,7 +520,10 @@ public class SpongeMod extends MetaModContainer {
             CommandManager service = this.game.getCommandManager();
             service.getCommands().stream().filter(mapping -> mapping.getCallable() instanceof MinecraftCommandWrapper)
                     .forEach(service::removeMapping);
-            ((SqlServiceImpl) this.game.getServiceManager().provideUnchecked(SqlService.class)).close();
+            Optional<SqlService> optSql = this.game.getServiceManager().provide(SqlService.class);
+            if (optSql.isPresent()) {
+                ((SqlServiceImpl) optSql.get()).close();
+            }
         } catch (Throwable t) {
             this.controller.errorOccurred(this, t);
         }
